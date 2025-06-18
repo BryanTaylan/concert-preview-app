@@ -1,38 +1,18 @@
-import React, { useState } from 'react';
-import { HomePage } from './components/HomePage';
-import { VenueDetail } from './components/VenueDetail';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-
-type AppView = 'home' | 'venue';
+import { HomePage } from './components/HomePage';
+import { SeatMapView } from './components/SeatMapView';
 
 function App() {
-  const [currentView, setCurrentView] = useState<AppView>('home');
-  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null);
-
-  const handleVenueSelect = (venueId: string) => {
-    setSelectedVenueId(venueId);
-    setCurrentView('venue');
-  };
-
-  const handleBackToHome = () => {
-    setCurrentView('home');
-    setSelectedVenueId(null);
-  };
-
   return (
     <AuthProvider>
-      <div className="min-h-screen">
-        {currentView === 'home' ? (
-          <HomePage onVenueSelect={handleVenueSelect} />
-        ) : (
-          selectedVenueId && (
-            <VenueDetail 
-              venueId={selectedVenueId} 
-              onBack={handleBackToHome}
-            />
-          )
-        )}
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/seatmap" element={<SeatMapView />} />
+        </Routes>
+      </Router>
     </AuthProvider>
   );
 }

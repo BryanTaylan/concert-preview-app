@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SectionOverview } from './SectionOverview';
 import { SectionDetail } from './SectionDetail';
-import { concertSections } from '../data/mockData';
 import { venues } from '../data/venueData';
 import { Section } from '../types';
 
@@ -12,6 +11,14 @@ interface VenueDetailProps {
 
 export const VenueDetail: React.FC<VenueDetailProps> = ({ venueId, onBack }) => {
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
+  const [sections, setSections ] = useState<Section[]>([]);
+
+  useEffect(() => {
+  fetch('http://localhost:5000/api/seats')
+    .then((res) => res.json())
+    .then((data) => setSections(data))
+    .catch((err) => console.error('Error fetching seats:', err));
+}, []);
   
   // Find the selected venue
   const venue = venues.find(v => v.id === venueId);
@@ -51,7 +58,7 @@ export const VenueDetail: React.FC<VenueDetailProps> = ({ venueId, onBack }) => 
         ) : (
           <SectionOverview 
             venue={venue}
-            sections={concertSections}
+            sections={sections}
             onSectionClick={handleSectionSelect}
             onBackToHome={onBack}
           />
